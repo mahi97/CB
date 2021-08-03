@@ -15,14 +15,17 @@ import urllib3
 import re
 import platform
 
-search_time = 0.2  # 잔여백신을 해당 시간마다 한번씩 검색합니다. 단위: 초
+search_time = 0.2  # Scan the remaining vaccine once every corresponding time. Units: Seconds
 urllib3.disable_warnings()
-
-# 아래의 `load_cookie()` 에서 쿠키를 불러옴.
+#127.40315938843808
+#36.32422482740255
+#127.28028356590578
+#36.3999757438553
+# Get cookies from 'load_cookie()' below.
 jar = None
 
 
-# 기존 입력 값 로딩
+# Loading existing input values
 def load_config():
     config_parser = configparser.ConfigParser()
     if os.path.exists('config.ini'):
@@ -30,7 +33,7 @@ def load_config():
             config_parser.read('config.ini')
 
             while True:
-                skip_input = str.lower(input("기존에 입력한 정보로 재검색하시겠습니까? Y/N : "))
+                skip_input = str.lower(input("Do you want to start with the previous setting? Y/N : "))
                 if skip_input == "y":
                     skip_input = True
                     break
@@ -38,10 +41,10 @@ def load_config():
                     skip_input = False
                     break
                 else:
-                    print("Y 또는 N을 입력해 주세요.")
+                    print("Please enter Y or N.")
 
             if skip_input:
-                # 설정 파일이 있으면 최근 로그인 정보 로딩
+                # Loading recent login information if a setup file exists.
                 configuration = config_parser['config']
                 previous_used_type = configuration["VAC"]
                 previous_top_x = configuration["topX"]
@@ -57,7 +60,7 @@ def load_config():
     return None, None, None, None, None, None
 
 
-# cookie.ini 안의 [chrome][cookie_file] 에서 경로를 로드함.
+# Loaded path from [chrome][cookie_file] in cookie.ini.
 def load_cookie_config():
     global jar
 
@@ -83,11 +86,12 @@ def load_cookie_config():
             if os.path.exists(cookie_path):
                 return cookie_path
             else:
-                print("지정된 경로에 쿠키 파일이 존재하지 않습니다. 기본값으로 시도합니다.")
+                print("Cookie file does not exist at the specified path. Try with default values.")
                 return None
-        except Exception:  # 정확한 오류를 몰라서 전부 Exception
+        except Exception:  # I don't know the exact error, so all of them are Exception.
             return None
     return None
+
 
 def load_saved_cookie() -> bool:
     #  print('saved cookie loading')
@@ -110,18 +114,20 @@ def load_saved_cookie() -> bool:
 
     return False
 
+
 def dump_cookie(value):
     config_parser = configparser.ConfigParser()
     config_parser.read('cookie.ini')
-    
+
     with open('cookie.ini', 'w') as cookie_file:
         config_parser['cookie_values'] = {
             '_kawlt': value
         }
         config_parser.write(cookie_file)
 
-# cookie 경로가 입력되지 않았을시, 쿠키 파일이 Default 경로에 있는지 확인함
-# 경로가 입력되었거나, Default 경로의 쿠키가 존재해야 global jar 함수에 cookie를 로드함.
+
+# Cookie path is not entered, cookie file is in Default path
+# Cookie loaded into global jar function when path is entered or cookie in Default path exists.
 def load_cookie_from_chrome() -> None:
     global jar
 
@@ -146,22 +152,24 @@ def load_cookie_from_chrome() -> None:
             cookie_path = os.path.expandvars(
                 "%LOCALAPPDATA%/Google/Chrome/User Data/Default/Cookies")
         else:  # Jython?
-            print("지원하지 않는 환경입니다.")
+            print("This environment is not supported.")
             close()
 
         if os.path.exists(cookie_path) is False:
-            print("기본 쿠키 파일 경로에 파일이 존재하지 않습니다. 아래 링크를 참조하여 쿠키 파일 경로를 지정해주세요.\n" +
+            print("The file does not exist in the default cookie file path. " +
+                  "Please refer to the link below and specify the cookie file path.\n" +
                   "https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/discussions/403")
             close()
 
     jar = browser_cookie3.chrome(
         cookie_file=cookie_file, domain_name=".kakao.com")
 
-    # 쿠키를 cookie.ini에 저장한다
+    # Save cookies in cookie.ini.
     for cookie in jar:
         if cookie.name == '_kawlt':
             dump_cookie(cookie.value)
             break
+
 
 def load_search_time():
     global search_time
@@ -185,20 +193,22 @@ def check_user_info_loaded():
         user_info_api, headers=Headers.headers_vacc, cookies=jar, verify=False)
     user_info_json = json.loads(user_info_response.text)
     if user_info_json.get('error'):
-        # cookie.ini에 있는 쿠키가 유통기한 지났을 수 있다
-        # 비교 위해서 cookie.ini 쿠키를 'prev_jar'에 저장한다
-        prev_jar = jar 
+        # The cookies in Cookie.ini may be past their expiration date.
+        # Save cookies.ini cookies to 'prev_jar' for comparison.
+        prev_jar = jar
         load_cookie_from_chrome()
 
-        # 크롬 브라우저에서 새로운 쿠키를 찾았으면 다시 체크 시작 한다
+        # If you find a new cookie in the Chrome browser, start checking again.
         if prev_jar != jar:
             #  print('new cookie value from chrome detected')
             check_user_info_loaded()
             return
 
-        print("사용자 정보를 불러오는데 실패하였습니다.")
-        print("Chrome 브라우저에서 카카오에 제대로 로그인되어있는지 확인해주세요.")
-        print("로그인이 되어 있는데도 안된다면, 카카오톡에 들어가서 잔여백신 알림 신청을 한번 해보세요. 정보제공 동의가 나온다면 동의 후 다시 시도해주세요.")
+        print("Failed to retrieve user information.")
+        print("Please check if you are properly logged in to Kakao in the Chrome browser.")
+        print("If you can't do it even though you're logged in, " +
+              "please go into Kakao Talk and apply for the remaining vaccine notification. " +
+              "If you are asked to provide information, please agree and try again.")
         close()
     else:
         user_info = user_info_json.get("user")
@@ -208,21 +218,21 @@ def check_user_info_loaded():
             if key != 'status':
                 continue
             if key == 'status' and value == "NORMAL":
-                print("사용자 정보를 불러오는데 성공했습니다.")
+                print("Successfully retrieved user information.")
                 break
             elif key == 'status' and value == "UNKNOWN":
-                print("상태를 알 수 없는 사용자입니다. 1339 또는 보건소에 문의해주세요.")
+                print("User whose status is unknown. Please contact 1339 or the health center.")
                 close()
             else:
-                print("이미 접종이 완료되었거나 예약이 완료된 사용자입니다.")
+                print("Users who have already been vaccinated or who have been booked.")
                 close(success=None)
 
 
 def fill_str_with_space(input_s, max_size=40, fill_char=" "):
     """
-    - 길이가 긴 문자는 2칸으로 체크하고, 짧으면 1칸으로 체크함.
-    - 최대 길이(max_size)는 40이며, input_s의 실제 길이가 이보다 짧으면
-    남은 문자를 fill_char로 채운다.
+    - Check 2 spaces for long characters and 1 space if short.
+    - Maximum length (max_size) is 40, and the actual length of input_s is shorter than this.
+    Fill in the remaining characters with fill_char.
     """
     length = 0
     for c in input_s:
@@ -249,104 +259,106 @@ def is_in_range(coord_type, coord, user_min_x=-180.0, user_max_y=90.0):
         else:
             return False
     except ValueError:
-        # float 이외 값 입력 방지
+        # Prevent entry of values other than float
         return False
 
 
 # pylint: disable=too-many-branches
 def input_config():
     vaccine_candidates = [
-        {"name": "아무거나", "code": "ANY"},
-        {"name": "화이자", "code": "VEN00013"},
-        {"name": "모더나", "code": "VEN00014"},
-        {"name": "아스트라제네카", "code": "VEN00015"},
-        {"name": "얀센", "code": "VEN00016"},
-        {"name": "(미사용)", "code": "VEN00017"},
-        {"name": "(미사용)", "code": "VEN00018"},
-        {"name": "(미사용)", "code": "VEN00019"},
-        {"name": "(미사용)", "code": "VEN00020"},
+        {"name": "Any Vaccine", "code": "ANY"},
+        {"name": "pfizer", "code": "VEN00013"},
+        {"name": "Moderna", "code": "VEN00014"},
+        {"name": "Astrazeneca", "code": "VEN00015"},
+        {"name": "Janssen", "code": "VEN00016"},
+        {"name": "(Not used)", "code": "VEN00017"},
+        {"name": "(Not used)", "code": "VEN00018"},
+        {"name": "(Not used)", "code": "VEN00019"},
+        {"name": "(Not used)", "code": "VEN00020"},
     ]
     vaccine_type = None
     while True:
-        print("=== 백신 목록 ===")
+        print("=== Vaccine List ===")
         for vaccine in vaccine_candidates:
-            if vaccine["name"] == "(미사용)":
+            if vaccine["name"] == "(Not used)":
                 continue
             print(
                 f"{fill_str_with_space(vaccine['name'], 10)} : {vaccine['code']}")
 
-        vaccine_type = str.upper(input("예약시도할 백신 코드를 알려주세요: ").strip())
+        vaccine_type = str.upper(input("Please choose the vaccine code to reserve: ").strip())
         if any(x["code"] == vaccine_type for x in vaccine_candidates) or vaccine_type.startswith("FORCE:"):
             if vaccine_type.startswith("FORCE:"):
                 vaccine_type = vaccine_type[6:]
 
-                print("경고: 강제 코드 입력모드를 사용하셨습니다.\n" +
-                      "이 모드는 새로운 백신이 예약된 코드로 **등록되지 않은 경우에만** 사용해야 합니다.\n" +
-                      "입력하신 코드가 정상적으로 작동하는 백신 코드인지 필히 확인해주세요.\n" +
-                      f"현재 코드: '{vaccine_type}'\n")
+                print("WARNING: You have used forced code entry mode.\n" +
+                      "This mode should only be used** if the new vaccine is not registered as a reserved code.\n" +
+                      "Please make sure that the code you entered is a vaccine code that works normally.\n" +
+                      f"Current Code: f'{vaccine_type}'\n")
 
-                if (len(vaccine_type) != 8 or not vaccine_type.startswith("VEN") or not vaccine_type[3:].isdigit()):
-                    print("입력하신 코드가 현재 알려진 백신 코드 형식이랑 맞지 않습니다.")
-                    proceed = str.lower(input("진행하시겠습니까? Y/N : "))
+                if len(vaccine_type) != 8 or not vaccine_type.startswith("VEN") or not vaccine_type[3:].isdigit():
+                    print("The code you entered does not match the current known vaccine code format.")
+                    proceed = str.lower(input("Do you want to proceed? Y/N : "))
                     if proceed == "y":
                         pass
                     elif proceed == "n":
                         continue
                     else:
-                        print("Y 또는 N을 입력해 주세요.")
+                        print("Please enter Y or N.")
                         continue
 
-            if next((x for x in vaccine_candidates if x["code"] == vaccine_type), {"name": ""})["name"] == "(미사용)":
-                print("현재 프로그램 버전에서 백신 이름이 등록되지 않은, 추후를 위해 미리 넣어둔 백신 코드입니다.\n" +
-                      "입력하신 코드가 정상적으로 작동하는 백신 코드인지 필히 확인해주세요.\n" +
-                      f"현재 코드: '{vaccine_type}'\n")
+            if next((x for x in vaccine_candidates if x["code"] == vaccine_type), {"name": ""})["name"] == "(Not used)":
+                print("This is the vaccine code that has not been registered in the current version of the program.\n" +
+                      "Please make sure that the code you entered is a vaccine code that works normally.\n" +
+                      f"Current Code: '{vaccine_type}'\n")
 
             break
         else:
-            print("백신 코드를 확인해주세요.")
+            print("Please check the vaccine code.")
 
-    print("사각형 모양으로 백신범위를 지정한 뒤, 해당 범위 안에 있는 백신을 조회해서 남은 백신이 있으면 Chrome 브라우저를 엽니다.")
+    print("After you specify the range of map to search," +
+          " look up the vaccine within that range and open the Chrome browser if there are any remaining vaccines.")
     top_x = None
     while top_x is None:
-        top_x = input("사각형의 위쪽 좌측 x값을 넣어주세요. 127.xxxxxx: ").strip()
+        top_x = input("Please enter the top left x of the square. 127.xxxxxx: ").strip()
         if not is_in_range(coord_type="x", coord=top_x):
-            print(f"올바른 좌표 값이 아닙니다. 입력 값 : {top_x}")
+            print(f"This is not a valid coordinate value. Input Value: {top_x}")
             top_x = None
 
     top_y = None
     while top_y is None:
-        top_y = input("사각형의 위쪽 좌측 y값을 넣어주세요 37.xxxxxx: ").strip()
+        top_y = input("Please enter the top left y of the square. 37.xxxxxx: ").strip()
         if not is_in_range(coord_type="y", coord=top_y):
-            print(f"올바른 좌표 값이 아닙니다. 입력 값 : {top_y}")
+            print(f"This is not a valid coordinate value. Input Value: {top_y}")
             top_y = None
 
     bottom_x = None
     while bottom_x is None:
-        bottom_x = input("사각형의 아래쪽 우측 x값을 넣어주세요 127.xxxxxx: ").strip()
+        bottom_x = input("Please enter the bottom right x of the square 127.xxxxxx: ").strip()
         if not is_in_range(coord_type="x", coord=bottom_x):
-            print(f"올바른 좌표 값이 아닙니다. 입력 값 : {bottom_x}")
+            print(f"This is not a valid coordinate value. Input Value: {bottom_x}")
             bottom_x = None
 
     bottom_y = None
     while bottom_y is None:
-        bottom_y = input("사각형의 아래쪽 우측 y값을 넣어주세요 37.xxxxxx: ").strip()
+        bottom_y = input("Please enter the bottom right y of the square 37.xxxxxx: ").strip()
         if not is_in_range(coord_type="y", coord=bottom_y):
-            print(f"올바른 좌표 값이 아닙니다. 입력 값 : {bottom_y}")
+            print(f"This is not a valid coordinate value. Input Value: {bottom_y}")
             bottom_y = None
 
     only_left = None
     while only_left is None:
-        only_left = str.lower(input("남은 잔여백신이 있는 병원만 조회하시겠습니까? Y/N : "))
+        only_left = str.lower(input("Would you like to inquire only hospitals with remaining vaccines? Y/N : "))
         if only_left == "y":
             only_left = True
         elif only_left == "n":
             only_left = False
         else:
-            print("Y 또는 N을 입력해 주세요.")
+            print("Please enter Y or N.")
             only_left = None
 
     dump_config(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
     return vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left
+
 
 # pylint: disable=too-many-arguments
 def dump_config(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left):
@@ -390,10 +402,10 @@ def play_xylophon():
 def close(success=False):
     if success is True:
         play_tada()
-        send_msg("잔여백신 예약 성공!! \n 카카오톡지갑을 확인하세요.")
+        send_msg("Reservation successful for remaining vaccine!! Check your \n KakaoTalk wallet.")
     elif success is False:
         play_xylophon()
-        send_msg("오류와 함께 잔여백신 예약 프로그램이 종료되었습니다.")
+        send_msg("The remaining vaccine reservation program has ended with an error.")
     else:
         pass
     input("Press Enter to close...")
@@ -405,7 +417,7 @@ def pretty_print(json_object):
         if org.get('status') == "CLOSED" or org.get('status') == "EXHAUSTED" or org.get('status') == "UNAVAILABLE":
             continue
         print(
-            f"잔여갯수: {org.get('leftCounts')}\t상태: {org.get('status')}\t기관명: {org.get('orgName')}\t주소: {org.get('address')}")
+            f"# of Vaccine: {org.get('leftCounts')}\tStatus: {org.get('status')}\tHospital Name: {org.get('orgName')}\tAddress: {org.get('address')}")
 
 
 class Headers:
@@ -445,21 +457,22 @@ def try_reservation(organization_code, vaccine_type):
         if key != 'code':
             continue
         if key == 'code' and value == "NO_VACANCY":
-            print("잔여백신 접종 신청이 선착순 마감되었습니다.")
+            print("Your application for the remaining vaccine has been closed on a first-come, first-served basis.")
             time.sleep(0.08)
         elif key == 'code' and value == "TIMEOUT":
-            print("TIMEOUT, 예약을 재시도합니다.")
+            print("TIMEOUT, Retry booking.")
             retry_reservation(organization_code, vaccine_type)
         elif key == 'code' and value == "SUCCESS":
-            print("백신접종신청 성공!!!")
+            print("Vaccination application successful!!!")
             organization_code_success = response_json.get("organization")
             print(
-                f"병원이름: {organization_code_success.get('orgName')}\t" +
-                f"전화번호: {organization_code_success.get('phoneNumber')}\t" +
-                f"주소: {organization_code_success.get('address')}")
+                f"Hospital Name: {organization_code_success.get('orgName')}\t" +
+                f"Phone Number: {organization_code_success.get('phoneNumber')}\t" +
+                f"Address: {organization_code_success.get('address')}")
             close(success=True)
         else:
-            print("ERROR. 아래 메시지를 보고, 예약이 신청된 병원 또는 1339에 예약이 되었는지 확인해보세요.")
+            print("ERROR. Look at the message below and see if your reservation is made or " +
+                  "call the hospital for confirmation")
             print(response.text)
             close()
 
@@ -477,20 +490,22 @@ def retry_reservation(organization_code, vaccine_type):
         if key != 'code':
             continue
         if key == 'code' and value == "NO_VACANCY":
-            print("잔여백신 접종 신청이 선착순 마감되었습니다.")
+            print("Your application for the remaining vaccine has been closed on a first-come, first-served basis.")
             time.sleep(0.08)
         elif key == 'code' and value == "SUCCESS":
-            print("백신접종신청 성공!!!")
+            print("Vaccination application successful!!!")
             organization_code_success = response_json.get("organization")
             print(
-                f"병원이름: {organization_code_success.get('orgName')}\t" +
-                f"전화번호: {organization_code_success.get('phoneNumber')}\t" +
-                f"주소: {organization_code_success.get('address')}")
+                f"Hospital Name: {organization_code_success.get('orgName')}\t" +
+                f"Phone Number: {organization_code_success.get('phoneNumber')}\t" +
+                f"Address: {organization_code_success.get('address')}")
             close(success=True)
         else:
-            print("ERROR. 아래 메시지를 보고, 예약이 신청된 병원 또는 1339에 예약이 되었는지 확인해보세요.")
+            print("ERROR. Look at the message below and see if your reservation is made or " +
+                  "call the hospital for confirmation")
             print(response.text)
             close()
+
 
 # ===================================== def ===================================== #
 
@@ -560,14 +575,14 @@ def find_vaccine(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left):
         find_vaccine(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
         return None
 
-    print(f"{found.get('orgName')} 에서 백신을 {found.get('leftCounts')}개 발견했습니다.")
-    print(f"주소는 : {found.get('address')} 입니다.")
+    print(f"There are {found.get('leftCounts')} Vaccine at {found.get('orgName')}.")
+    print(f"Address : {found.get('address')}")
     organization_code = found.get('orgCode')
 
-    # 실제 백신 남은수량 확인
+    # Actual Vaccine Remaining
     vaccine_found_code = None
 
-    if vaccine_type == "ANY":  # ANY 백신 선택
+    if vaccine_type == "ANY":  # ANY Vaccine Selection
         check_organization_url = f'https://vaccine.kakao.com/api/v3/org/org_code/{organization_code}'
         check_organization_response = requests.get(check_organization_url, headers=Headers.headers_vacc, cookies=jar,
                                                    verify=False)
@@ -576,22 +591,21 @@ def find_vaccine(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left):
         for x in check_organization_data:
             if x.get('leftCount') != 0:
                 found = x
-                print(f"{x.get('vaccineName')} 백신을 {x.get('leftCount')}개 발견했습니다.")
+                print(f"There are {found.get('leftCounts')} Vaccine at {found.get('orgName')}.")
                 vaccine_found_code = x.get('vaccineCode')
                 break
             else:
-                print(f"{x.get('vaccineName')} 백신이 없습니다.")
+                print(f"There is no {x.get('vaccineName')} vaccine.")
 
     else:
         vaccine_found_code = vaccine_type
-        print(f"{vaccine_found_code} 으로 예약을 시도합니다.")
+        print(f"Try to make a reservation for {vaccine_found_code}.")
 
     if vaccine_found_code and try_reservation(organization_code, vaccine_found_code):
         return None
     else:
         find_vaccine(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
         return None
-
 
 
 def main_function():
@@ -610,13 +624,12 @@ def main_function():
     close()
 
 
-
 def send_msg(msg):
     config_parser = configparser.ConfigParser()
     if os.path.exists('telegram.txt'):
         try:
             config_parser.read('telegram.txt')
-            print("Telegram으로 결과를 전송합니다.")
+            print("Send results to Telegram.")
             tgtoken = config_parser["telegram"]["token"]
             tgid = config_parser["telegram"]["chatid"]
             bot = telepot.Bot(tgtoken)
