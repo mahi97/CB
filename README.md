@@ -4,7 +4,7 @@ Use the Remaining Vaccine Map API to view the number of remaining vaccines, and 
 ## Reservation for Kakao Remaining Vaccines
 ### How to Use
 1. Please run the Chrome browser because we are using the Chrome browser for all operations.
-2. Access the [Kakao account login page] (https://accounts.kakao.com/login?continue=https%3A%2F%2Fvaccine-map.kakao.com%2Fmap2%3Fv%3D1) and log in to Kakao. [Login Issues](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/issues/82)
+2. Access the [Kakao account login page](https://accounts.kakao.com/login?continue=https%3A%2F%2Fvaccine-map.kakao.com%2Fmap2%3Fv%3D1) and log in to Kakao. [Login Issues](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/issues/82)
 3. See [#2](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/discussions/2) to find the coordinate value of the range from which to search for residual vaccines.
 4. From the [Release Page](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/releases/latest), download and run files that fit your operating system.
 5. If you request permission, please approve it. Automatically proceed with scanning and scheduling attempts.
