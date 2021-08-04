@@ -24,7 +24,9 @@ def check_user_info_loaded(jar):
 
         print("Failed to retrieve user information.")
         print("Please check if you are properly logged in to Kakao in Chrome browser.")
-        print("If you can't do it even though you're logged in, please go into Kakao Talk and apply for the remaining vaccine notification. If you agree to provide information, please agree and try again.")
+        print("If you can't do it even though you're logged in, " +
+              "please go into Kakao Talk and apply for the remaining vaccine notification. " +
+              "If you agree to provide information, please agree and try again.")
         close()
     else:
         user_info = user_info_json.get("user")
@@ -34,7 +36,8 @@ def check_user_info_loaded(jar):
             print("User whose status is unknown. Please contact 1339 or the health center.")
             close(success=None)
         elif user_info['status'] == "REFUSED":
-            print(f"{user_info['name']} is identified as a user who booked a vaccine and did not visit. Reservations for remaining vaccines are not available.")
+            print(f"{user_info['name']} is identified as a user who booked a vaccine and did not visit. " +
+                  f"Reservations for remaining vaccines are not available.")
             close(success=None)
         elif user_info['status'] == "ALREADY_RESERVED" or user_info['status'] == "ALREADY_VACCINATED":
             print(f"{user_info['name']} is a user who has already been booked or inoculated.")

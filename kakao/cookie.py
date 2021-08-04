@@ -93,7 +93,8 @@ def load_cookie_from_chrome():
             close()
 
         if os.path.exists(cookie_path) is False:
-            print("The file does not exist in the default cookie file path. Please specify the cookie file path by referring to the link below.\n" +
+            print("The file does not exist in the default cookie file path." +
+                  " Please specify the cookie file path by referring to the link below.\n" +
                   "https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/discussions/403")
             close()
 
