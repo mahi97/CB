@@ -132,20 +132,20 @@ def try_reservation(organization_code, vaccine_type, jar):
         if key != 'code':
             continue
         if key == 'code' and value == "NO_VACANCY":
-            print("잔여백신 접종 신청이 선착순 마감되었습니다.")
+            print("Your application for the remaining vaccine has been closed on a first-come, first-served basis.")
         elif key == 'code' and value == "TIMEOUT":
-            print("TIMEOUT, 예약을 재시도합니다.")
+            print("TIMEOUT, Retry booking.")
             retry_reservation(organization_code, vaccine_type, jar)
         elif key == 'code' and value == "SUCCESS":
-            print("백신접종신청 성공!!!")
+            print("Vaccination application successful!!!")
             organization_code_success = response_json.get("organization")
             print(
-                f"병원이름: {organization_code_success.get('orgName')}\t" +
-                f"전화번호: {organization_code_success.get('phoneNumber')}\t" +
-                f"주소: {organization_code_success.get('address')}")
+                f"Hospital Name: {organization_code_success.get('orgName')}\t" +
+                f"Phone Number: {organization_code_success.get('phoneNumber')}\t" +
+                f"Address: {organization_code_success.get('address')}")
             close(success=True)
         else:
-            print("ERROR. 아래 메시지를 보고, 예약이 신청된 병원 또는 1339에 예약이 되었는지 확인해보세요.")
+            print("ERROR. Look at the message below and see if you have a reservation at the hospital or 1339 that you applied for.")
             print(response.text)
             close()
 
@@ -162,16 +162,16 @@ def retry_reservation(organization_code, vaccine_type, jar):
         if key != 'code':
             continue
         if key == 'code' and value == "NO_VACANCY":
-            print("잔여백신 접종 신청이 선착순 마감되었습니다.")
+            print("Your application for the remaining vaccine has been closed on a first-come, first-served basis.")
         elif key == 'code' and value == "SUCCESS":
-            print("백신접종신청 성공!!!")
+            print("Vaccination application successful!!!")
             organization_code_success = response_json.get("organization")
             print(
-                f"병원이름: {organization_code_success.get('orgName')}\t" +
-                f"전화번호: {organization_code_success.get('phoneNumber')}\t" +
-                f"주소: {organization_code_success.get('address')}")
+                f"Hospital Name: {organization_code_success.get('orgName')}\t" +
+                f"Phone Number: {organization_code_success.get('phoneNumber')}\t" +
+                f"Address: {organization_code_success.get('address')}")
             close(success=True)
         else:
-            print("ERROR. 아래 메시지를 보고, 예약이 신청된 병원 또는 1339에 예약이 되었는지 확인해보세요.")
+            print("ERROR. Look at the message below and see if you have a reservation at the hospital or 1339 that you applied for.")
             print(response.text)
             close()

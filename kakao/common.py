@@ -10,10 +10,10 @@ from playsound import playsound, PlaysoundException
 def close(success=False):
     if success is True:
         play_tada()
-        send_msg("잔여백신 예약 성공!! \n 카카오톡지갑을 확인하세요.")
+        send_msg("Reservation was successful!! Check your \n KakaoTalk wallet.")
     elif success is False:
         play_xylophon()
-        send_msg("오류와 함께 잔여백신 예약 프로그램이 종료되었습니다.")
+        send_msg("The remaining vaccine reservation program has ended with an error.")
     else:
         pass
     input("Press Enter to close...")
@@ -52,7 +52,7 @@ def send_msg(msg):
     if os.path.exists('telegram.txt'):
         try:
             config_parser.read('telegram.txt')
-            print("Telegram 으로 결과를 전송합니다.")
+            print("Send results to Telegram.")
             telegram_token = config_parser["telegram"]["token"]
             telegram_id = config_parser["telegram"]["chatid"]
             bot = telepot.Bot(telegram_token)
@@ -67,7 +67,7 @@ def pretty_print(json_object):
     for org in json_object["organizations"]:
         if org.get('status') == "CLOSED" or org.get('status') == "EXHAUSTED" or org.get('status') == "UNAVAILABLE":
             continue
-        print(f"잔여갯수: {org.get('leftCounts')}\t상태: {org.get('status')}\t기관명: {org.get('orgName')}\t주소: {org.get('address')}")
+        print(f"Number of Vaccine: {org.get('leftCounts')}\tStatus: {org.get('status')}\tHospital Name: {org.get('orgName')}\tAddress: {org.get('address')}")
 
 
 def fill_str_with_space(input_s, max_size=40, fill_char=" "):

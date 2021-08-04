@@ -23,6 +23,7 @@ def main_function():
     find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
     close()
 
+
 # ===================================== run ===================================== #
 if __name__ == '__main__':
     main_function()

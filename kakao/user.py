@@ -22,24 +22,24 @@ def check_user_info_loaded(jar):
             check_user_info_loaded(chrome_cookie)
             return
 
-        print("사용자 정보를 불러오는데 실패하였습니다.")
-        print("Chrome 브라우저에서 카카오에 제대로 로그인되어있는지 확인해주세요.")
-        print("로그인이 되어 있는데도 안된다면, 카카오톡에 들어가서 잔여백신 알림 신청을 한번 해보세요. 정보제공 동의가 나온다면 동의 후 다시 시도해주세요.")
+        print("Failed to retrieve user information.")
+        print("Please check if you are properly logged in to Kakao in Chrome browser.")
+        print("If you can't do it even though you're logged in, please go into Kakao Talk and apply for the remaining vaccine notification. If you agree to provide information, please agree and try again.")
         close()
     else:
         user_info = user_info_json.get("user")
         if user_info['status'] == "NORMAL":
-            print(f"{user_info['name']}님 안녕하세요.")
+            print(f"Hello {user_info['name']}.")
         elif user_info['status'] == "UNKNOWN":
-            print("상태를 알 수 없는 사용자입니다. 1339 또는 보건소에 문의해주세요.")
+            print("User whose status is unknown. Please contact 1339 or the health center.")
             close(success=None)
         elif user_info['status'] == "REFUSED":
-            print(f"{user_info['name']}님은 백신을 예약하고 방문하지 않은 사용자로 파악됩니다. 잔여백신 예약이 불가합니다.")
+            print(f"{user_info['name']} is identified as a user who booked a vaccine and did not visit. Reservations for remaining vaccines are not available.")
             close(success=None)
         elif user_info['status'] == "ALREADY_RESERVED" or user_info['status'] == "ALREADY_VACCINATED":
-            print(f"{user_info['name']}님은 이미 예약 또는 접종이 완료된 사용자입니다.")
+            print(f"{user_info['name']} is a user who has already been booked or inoculated.")
             close(success=None)
         else:
-            print(f"알려지지 않은 상태 코드입니다. 상태코드:{user_info['status']}")
-            print("상태 코드 정보와 함께 Issues 생성 부탁드립니다.")
+            print(f"Unknown status code. Status code:{user_info['status']}")
+            print("Please create Isues with status code information.")
             close()

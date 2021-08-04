@@ -31,7 +31,7 @@ def load_cookie_config():
             if os.path.exists(cookie_path):
                 return cookie_path
             else:
-                print("지정된 경로에 쿠키 파일이 존재하지 않습니다. 기본값으로 시도합니다.")
+                print("Cookie file does not exist at the specified path. Try with default values.")
                 return None
         finally:
             pass
@@ -89,11 +89,11 @@ def load_cookie_from_chrome():
         elif os_type == "Windows":
             cookie_path = os.path.expandvars("%LOCALAPPDATA%/Google/Chrome/User Data/Default/Cookies")
         else:  # Jython?
-            print("지원하지 않는 환경입니다.")
+            print("This environment is not supported.")
             close()
 
         if os.path.exists(cookie_path) is False:
-            print("기본 쿠키 파일 경로에 파일이 존재하지 않습니다. 아래 링크를 참조하여 쿠키 파일 경로를 지정해주세요.\n" +
+            print("The file does not exist in the default cookie file path. Please specify the cookie file path by referring to the link below.\n" +
                   "https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/discussions/403")
             close()
 

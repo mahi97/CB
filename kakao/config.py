@@ -26,11 +26,11 @@ def is_in_range(coord_type, coord, user_min_x=-180.0, user_max_y=90.0):
 # pylint: disable=too-many-branches
 def input_config():
     vaccine_candidates = [
-        {"name": "아무거나", "code": "ANY"},
-        {"name": "화이자", "code": "VEN00013"},
-        {"name": "모더나", "code": "VEN00014"},
-        {"name": "아스트라제네카", "code": "VEN00015"},
-        {"name": "얀센", "code": "VEN00016"},
+        {"name": "Any Vaccine", "code": "ANY"},
+        {"name": "Pfizer", "code": "VEN00013"},
+        {"name": "Moderna", "code": "VEN00014"},
+        {"name": "Astrazeneca", "code": "VEN00015"},
+        {"name": "Johnson", "code": "VEN00016"},
         {"name": "(미사용)", "code": "VEN00017"},
         {"name": "(미사용)", "code": "VEN00018"},
         {"name": "(미사용)", "code": "VEN00019"},
@@ -38,51 +38,51 @@ def input_config():
     ]
     vaccine_type = None
     while True:
-        print("=== 백신 목록 ===")
+        print("=== Vaccine List ===")
         for vaccine in vaccine_candidates:
             if vaccine["name"] == "(미사용)":
                 continue
             print(
                 f"{fill_str_with_space(vaccine['name'], 10)} : {vaccine['code']}")
 
-        vaccine_type = str.upper(input("예약시도할 백신 코드를 알려주세요: ").strip())
+        vaccine_type = str.upper(input("Please enter the vaccine code: ").strip())
         if any(x["code"] == vaccine_type for x in vaccine_candidates) or vaccine_type.startswith("FORCE:"):
             if vaccine_type.startswith("FORCE:"):
                 vaccine_type = vaccine_type[6:]
 
-                print("경고: 강제 코드 입력모드를 사용하셨습니다.\n" +
-                      "이 모드는 새로운 백신이 예약된 코드로 **등록되지 않은 경우에만** 사용해야 합니다.\n" +
-                      "입력하신 코드가 정상적으로 작동하는 백신 코드인지 필히 확인해주세요.\n" +
-                      f"현재 코드: '{vaccine_type}'\n")
+                print("WARNING: You have used forced code entry mode.\n" +
+                      "This mode should only be used** if the new vaccine is not registered as a reserved code.\n" +
+                      "Please make sure that the code you entered is a vaccine code that works normally." +
+                      f"Vaccine Code: '{vaccine_type}'\n")
 
                 if len(vaccine_type) != 8 or not vaccine_type.startswith("VEN") or not vaccine_type[3:].isdigit():
-                    print("입력하신 코드가 현재 알려진 백신 코드 형식이랑 맞지 않습니다.")
-                    proceed = str.lower(input("진행하시겠습니까? Y/N : "))
+                    print("The code you entered does not match the current known vaccine code format.")
+                    proceed = str.lower(input("Do you want to proceed? Y/N : "))
                     if proceed == "y":
                         pass
                     elif proceed == "n":
                         continue
                     else:
-                        print("Y 또는 N을 입력해 주세요.")
+                        print("Please enter Y or N.")
                         continue
 
             if next((x for x in vaccine_candidates if x["code"] == vaccine_type), {"name": ""})["name"] == "(미사용)":
-                print("현재 프로그램 버전에서 백신 이름이 등록되지 않은, 추후를 위해 미리 넣어둔 백신 코드입니다.\n" +
-                      "입력하신 코드가 정상적으로 작동하는 백신 코드인지 필히 확인해주세요.\n" +
-                      f"현재 코드: '{vaccine_type}'\n")
+                print("This is the vaccine code that has not been registered in the current version of the program for future use.\n" +
+                      "Please make sure that the code you entered is a vaccine code that works normally.\n" +
+                      f"Vaccine Code: '{vaccine_type}'\n")
 
             break
         else:
-            print("백신 코드를 확인해주세요.")
+            print("Please check the vaccine code.")
 
-    print("사각형 모양으로 백신범위를 지정한 뒤, 해당 범위 안에 있는 백신을 조회해서 남은 백신이 있으면 해당 병원에 예약을 시도합니다.")
-    print("경위도는 구글 맵에서 원하는 위치를 우클릭하여 복사할 수 있습니다.")
+    print("After you specify a range of vaccines in a square shape, check the vaccine within that range and try to make an appointment with the hospital if there are any remaining vaccines.")
+    print("You can right-click the desired location on the Google Map to copy the map.")
     top_x = None
     top_y = None
     while top_x is None or top_y is None:
-        top_y, top_x = input("사각형의 왼쪽 위 경위도를 넣어주세요. 37.28631662121671, 126.81741443463375: ").strip().split(",")
+        top_y, top_x = input("Please enter the top left coordination. 36.32346792518988, 127.46080403718007: ").strip().split(",")
         if not is_in_range(coord_type="x", coord=top_x) or not is_in_range(coord_type="y", coord=top_y):
-            print(f"올바른 좌표 값이 아닙니다. 입력 값 : {top_y}, {top_x}")
+            print(f"This is not a valid coordinate value. Input Value : {top_y}, {top_x}")
             top_x = None
             top_y = None
         else:
@@ -92,9 +92,9 @@ def input_config():
     bottom_x = None
     bottom_y = None
     while bottom_x is None or bottom_y is None:
-        bottom_y, bottom_x = input("사각형의 오른쪽 아래 경위도를 넣어주세요. 37.28631662121671, 126.81741443463375: ").strip().split(",")
+        bottom_y, bottom_x = input("Please enter the bottom right coordination. 36.431638008998874, 127.2857236995207: ").strip().split(",")
         if not is_in_range(coord_type="x", coord=bottom_x) or not is_in_range(coord_type="y", coord=bottom_y):
-            print(f"올바른 좌표 값이 아닙니다. 입력 값 : {bottom_y}, {bottom_x}")
+            print(f"This is not a valid coordinate value. Input Value : {bottom_y}, {bottom_x}")
             bottom_x = None
             bottom_y = None
         else:
@@ -103,13 +103,13 @@ def input_config():
 
     only_left = None
     while only_left is None:
-        only_left = str.lower(input("남은 잔여백신이 있는 병원만 조회하시겠습니까? Y/N : "))
+        only_left = str.lower(input("Do you want to check only hospitals with remaining vaccines? Y/N : "))
         if only_left == "y":
             only_left = True
         elif only_left == "n":
             only_left = False
         else:
-            print("Y 또는 N을 입력해 주세요.")
+            print("Please enter Y or N.")
             only_left = None
 
     dump_config(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
@@ -123,7 +123,7 @@ def load_config():
         try:
             config_parser.read('config.ini')
             while True:
-                skip_input = str.lower(input("기존에 입력한 정보로 재검색하시겠습니까? Y/N : "))
+                skip_input = str.lower(input("Do you want to search with the previous information? Y/N : "))
                 if skip_input == "y":
                     skip_input = True
                     break
@@ -131,7 +131,7 @@ def load_config():
                     skip_input = False
                     break
                 else:
-                    print("Y 또는 N을 입력해 주세요.")
+                    print("Please enter Y or N.")
 
             if skip_input:
                 try:
@@ -145,7 +145,7 @@ def load_config():
                     previous_only_left = configuration["onlyLeft"] == "True"
                     return previous_used_type, previous_top_x, previous_top_y, previous_bottom_x, previous_bottom_y, previous_only_left
                 except KeyError:
-                    print('기존에 입력한 정보가 없습니다.')
+                    print('No information was previously entered.')
             else:
                 return None, None, None, None, None, None
         except ValueError:
@@ -177,16 +177,16 @@ def load_search_time():
         config_parser.read('config.ini')
         input_time = config_parser.getfloat('config', 'search_time', fallback=0.2)
 
-        if input_time < 0.1:
+        if input_time < 0.05:
             confirm_input = None
             while confirm_input is None:
-                confirm_input = str.lower(input("과도하게 딜레이를 줄이면 계정 정지의 위험이 있습니다. 계속하시겠습니까? Y/N : "))
+                confirm_input = str.lower(input("There is a risk of account suspension if the delay is excessively reduced. Would you like to go on? Y/N : "))
                 if confirm_input == "y":
                     search_time = input_time
                 elif confirm_input == "n":
-                    print("검색 주기가 기본값 0.2로 설정되었습니다.")
+                    print("The search cycle is set to the default of 0.1.")
                 else:
-                    print("Y 또는 N을 입력해 주세요.")
+                    print("Please enter Y or N.")
                     confirm_input = None
         else:
             search_time = input_time
