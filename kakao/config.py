@@ -75,7 +75,8 @@ def input_config():
         else:
             print("Please check the vaccine code.")
 
-    print("After you specify a range of vaccines in a square shape, check the vaccine within that range and try to make an appointment with the hospital if there are any remaining vaccines.")
+    print("After you specify a range of vaccines in a square shape," +
+          " check the vaccine within that range and try to make an appointment with the hospital if there are any remaining vaccines.")
     print("You can right-click the desired location on the Google Map to copy the map.")
     top_x = None
     top_y = None
@@ -180,7 +181,8 @@ def load_search_time():
         if input_time < 0.05:
             confirm_input = None
             while confirm_input is None:
-                confirm_input = str.lower(input("There is a risk of account suspension if the delay is excessively reduced. Would you like to go on? Y/N : "))
+                confirm_input = str.lower(input("There is a risk of account suspension if the delay is excessively reduced." +
+                                                " Would you like to go on? Y/N : "))
                 if confirm_input == "y":
                     search_time = input_time
                 elif confirm_input == "n":
