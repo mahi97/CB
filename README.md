@@ -1,6 +1,6 @@
 # korea-covid-19-remaining-vaccine-macro [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FSJang1%2Fkorea-covid-19-remaining-vaccine-macro&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=README_HITS&edge_flat=false)](https://hits.seeyoufarm.com) [![Python package](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/actions/workflows/package.yml/badge.svg)](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/actions/workflows/package.yml) [![CodeQL](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/actions/workflows/codeql-analysis.yml)
 Use the Remaining Vaccine Map API to view the number of remaining vaccines, and go to the Reservations page for Remaining Vaccines in case of availability.
-### Please refer to the [notice](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/discussions/468) for details.
+### Please refer to the [notice](https://github.com/SJang1/korea-covid-19-remaining-vaccine-macro/discussions/468) for details. [only korean]
 ## Reservation for Kakao Remaining Vaccines
 ### How to Use
 1. Please run the Chrome browser because we are using the Chrome browser for all operations.
