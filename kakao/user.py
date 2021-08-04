@@ -37,7 +37,7 @@ def check_user_info_loaded(jar):
             close(success=None)
         elif user_info['status'] == "REFUSED":
             print(f"{user_info['name']} is identified as a user who booked a vaccine and did not visit. " +
-                  f"Reservations for remaining vaccines are not available.")
+                  "Reservations for remaining vaccines are not available.")
             close(success=None)
         elif user_info['status'] == "ALREADY_RESERVED" or user_info['status'] == "ALREADY_VACCINATED":
             print(f"{user_info['name']} is a user who has already been booked or inoculated.")
