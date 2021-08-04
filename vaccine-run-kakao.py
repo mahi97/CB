@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.9 -m nuitka
 # -*- coding: utf-8 -*-
+
 from kakao.common import close
 from kakao.config import load_search_time, load_config, input_config
 from kakao.cookie import load_saved_cookie, load_cookie_from_chrome
@@ -21,7 +22,6 @@ def main_function():
         vaccine_type, top_x, top_y, bottom_x, bottom_y = previous_used_type, previous_top_x, previous_top_y, previous_bottom_x, previous_bottom_y
     find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
     close()
-
 
 # ===================================== run ===================================== #
 if __name__ == '__main__':
