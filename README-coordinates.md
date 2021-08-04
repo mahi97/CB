@@ -1,16 +1,22 @@
-# 좌표 구하는 방법
+# For KAIST
+ 
+top-left (y,x): `36.32346792518988, 127.46080403718007`
 
-1. [구글지도](https://maps.google.com)에 접속하고, 좌표를 구하고 싶은 지역으로 이동한다.
-2. 구하고 싶은 좌표가 있는 위치에서 우클릭을 하면 좌표값이 나타난다.
-3. 해당 좌표값을 좌클릭하면 좌표가 복사된다.
+bottom-right (y,x): `36.431638008998874, 127.2857236995207`
+
+# How to get coordinates
+
+1. Go to [Google Maps](https://maps.google.com) and move to the area where you want to get coordinates.
+2. If you right-click where the coordinates you want to get, the coordinates will appear.
+3. Left-click on the corresponding coordinate value to copy the coordinates.
 
 https://user-images.githubusercontent.com/29011440/128113250-54a14ff9-3dfe-407a-a643-3425ea82ad59.mov
 
 
-# 좌표값을 프로그램에 붙여넣기
+# Paste coordinate values into a program
 
-1. 프로그램으로 이동한다.
-2. **Ctrl+v 또는 Ctrl+Shift+v**를 누르거나 **마우스 우클릭**을 한다.
+1. Go to the program.
+2. Press **Ctrl+v or Ctrl+Shift+v** or **right-click**.
 
 https://user-images.githubusercontent.com/29011440/128113745-3d4788f8-7302-45ed-8eac-c3ed715595e9.mov
 
