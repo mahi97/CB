@@ -15,12 +15,12 @@ def main_function():
 
     search_time = load_search_time()
     check_user_info_loaded(cookie)
-    previous_used_type, previous_top_x, previous_top_y, previous_bottom_x, previous_bottom_y, only_left = load_config()
+    previous_used_type, previous_top_x, previous_top_y, previous_bottom_x, previous_bottom_y, only_left, exclusions = load_config()
     if previous_used_type is None:
-        vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left = input_config()
+        vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, exclusions = input_config()
     else:
-        vaccine_type, top_x, top_y, bottom_x, bottom_y = previous_used_type, previous_top_x, previous_top_y, previous_bottom_x, previous_bottom_y
-    find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
+        vaccine_type, top_x, top_y, bottom_x, bottom_y, exclusions = previous_used_type, previous_top_x, previous_top_y, previous_bottom_x, previous_bottom_y, exclusions
+    find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, exclusions)
     close()
 
 
