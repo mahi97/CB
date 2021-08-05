@@ -35,7 +35,7 @@ headers_vaccine = {
 
 
 # pylint: disable=too-many-locals,too-many-statements,too-many-branches,too-many-arguments
-def find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left):
+def find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, exclusions):
     url = 'https://vaccine-map.kakao.com/api/v3/vaccine/left_count_by_coords'
     data = {"bottomRight": {"x": bottom_x, "y": bottom_y}, "onlyLeft": only_left, "order": "count",
             "topLeft": {"x": top_x, "y": top_y}}
@@ -88,31 +88,35 @@ def find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bott
             close()
 
     if found is None:
-        find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
+        find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, exclusions)
         return None
 
-    print(f"{found.get('orgName')} 에서 백신을 {found.get('leftCounts')}개 발견했습니다.")
-    print(f"주소는 : {found.get('address')} 입니다.")
+    print(f"{found.get('leftCounts')} vaccines have been found at {found.get('orgName')}!")
+    print(f"Address : {found.get('address')}")
     organization_code = found.get('orgCode')
 
     # 실제 백신 남은수량 확인
     vaccine_found_code = None
 
-    if vaccine_type == "ANY":  # ANY 백신 선택
+    if vaccine_type == "ANY":  # ANY vaccine selection with exclusion check
         check_organization_url = f'https://vaccine.kakao.com/api/v3/org/org_code/{organization_code}'
         check_organization_response = requests.get(check_organization_url, headers=headers_vaccine, cookies=cookie, verify=False)
         check_organization_data = json.loads(check_organization_response.text).get("lefts")
         for x in check_organization_data:
             if x.get('leftCount') != 0:
-                print(f"{x.get('vaccineName')} 백신을 {x.get('leftCount')}개 발견했습니다.")
-                vaccine_found_code = x.get('vaccineCode')
-                break
+                print(f"Vaccine {x.get('vaccineName')} has been found with {x.get('leftCount')} remaining doses.")
+                found_code = x.get('vaccineCode')
+                if found_code in exclusions:
+                    print(f"Vaccine {found_code} is available, but was excluded.")
+                else:
+                    vaccine_found_code = found_code
+                    break
             else:
-                print(f"{x.get('vaccineName')} 백신이 없습니다.")
+                print(f"Vaccine {x.get('vaccineName')} is unavailable.")
 
     else:
         vaccine_found_code = vaccine_type
-        print(f"{vaccine_found_code} 으로 예약을 시도합니다.")
+        print(f"Attempt to make a reservation for {vaccine_found_code}.")
 
     if vaccine_found_code and try_reservation(organization_code, vaccine_found_code, cookie):
         return None
