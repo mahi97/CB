@@ -1,4 +1,4 @@
-# For KAIST
+# For Daejeon
  
 top-left (y,x): `36.32346792518988, 127.46080403718007`
 
