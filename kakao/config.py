@@ -155,7 +155,7 @@ def load_config():
 
 
 # pylint: disable=too-many-arguments
-def dump_config(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, search_time=0.2):
+def dump_config(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, search_time=0.1):
     config_parser = configparser.ConfigParser()
     config_parser['config'] = {}
     conf = config_parser['config']
@@ -173,10 +173,10 @@ def dump_config(vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, searc
 
 def load_search_time():
     config_parser = configparser.ConfigParser()
-    search_time = 0.2
+    search_time = 0.1
     if os.path.exists('config.ini'):
         config_parser.read('config.ini')
-        input_time = config_parser.getfloat('config', 'search_time', fallback=0.2)
+        input_time = config_parser.getfloat('config', 'search_time', fallback=0.1)
 
         if input_time < 0.05:
             confirm_input = None
