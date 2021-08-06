@@ -22,8 +22,9 @@ def is_in_range(coord_type, coord, user_min_x=-180.0, user_max_y=90.0):
         # float 이외 값 입력 방지
         return False
 
-
+# Disable pylint warnings
 # pylint: disable=too-many-branches
+# pylint: disable=too-many-statements
 def input_config():
     vaccine_candidates = [
         {"name": "Any Vaccine", "code": "ANY"},
