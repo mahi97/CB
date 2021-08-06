@@ -121,7 +121,7 @@ def find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bott
     if vaccine_found_code and try_reservation(organization_code, vaccine_found_code, cookie):
         return None
     else:
-        find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left)
+        find_vaccine(cookie, search_time, vaccine_type, top_x, top_y, bottom_x, bottom_y, only_left, exclusions)
         return None
 
 
