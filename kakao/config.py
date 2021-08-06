@@ -105,7 +105,7 @@ def input_config():
     top_x = None
     top_y = None
     while top_x is None or top_y is None:
-        top_y, top_x = input("Please enter the top left coordinates (Copy these for Daejeon: 36.32346792518988, 127.46080403718007):").strip().split(",")
+        top_y, top_x = input("Please enter the top left coordinates (Daejeon: 36.32346792518988, 127.46080403718007):").strip().split(",")
         if not is_in_range(coord_type="x", coord=top_x) or not is_in_range(coord_type="y", coord=top_y):
             print(f"This is not a valid coordinate value. Input Value : {top_y}, {top_x}")
             top_x = None
@@ -117,7 +117,7 @@ def input_config():
     bottom_x = None
     bottom_y = None
     while bottom_x is None or bottom_y is None:
-        bottom_y, bottom_x = input("Please enter the bottom right coordinates (Copy these for Daejeon: 36.431638008998874, 127.2857236995207): ").strip().split(",")
+        bottom_y, bottom_x = input("Please enter the bottom right coordinates (Daejeon: 36.431638008998874, 127.2857236995207): ").strip().split(",")
         if not is_in_range(coord_type="x", coord=bottom_x) or not is_in_range(coord_type="y", coord=bottom_y):
             print(f"This is not a valid coordinate value. Input Value : {bottom_y}, {bottom_x}")
             bottom_x = None
